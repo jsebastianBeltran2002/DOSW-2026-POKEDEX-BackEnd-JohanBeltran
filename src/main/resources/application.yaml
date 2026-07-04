@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: pokedex
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pokedex_db
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+    open-in-view: false
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/pokedex_stats
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+app:
+  jwt:
+    secret: clave-secreta-muy-larga-para-jwt-pokdex-dosw-2026
+    expiration-ms: 86400000
