@@ -1,0 +1,1 @@
+# DOSW-2026-POKEDEX-FrontEnd-JohanBeltran
