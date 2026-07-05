@@ -22,5 +22,5 @@ server:
 
 app:
   jwt:
-    secret: clave-secreta-muy-larga-para-jwt-pokdex-dosw-2026
+    secret: Hog4Fkb1UbykZ164GPygtNFVx2UJeZz1uFW+ECXmOHA=
     expiration-ms: 86400000

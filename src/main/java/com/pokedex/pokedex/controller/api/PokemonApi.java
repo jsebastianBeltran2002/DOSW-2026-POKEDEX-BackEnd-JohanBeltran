@@ -3,6 +3,7 @@ package com.pokedex.pokedex.controller.api;
 import com.pokedex.pokedex.controller.dto.request.PokemonRequest;
 import com.pokedex.pokedex.controller.dto.response.PokemonResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -44,14 +45,17 @@ public interface PokemonApi {
             @RequestParam String direccion);
 
     @Operation(summary = "Crear Pokémon - Solo ADMIN")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
     ResponseEntity<PokemonResponse> create(@Valid @RequestBody PokemonRequest request);
 
     @Operation(summary = "Actualizar Pokémon - Solo ADMIN")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/{id}")
     ResponseEntity<PokemonResponse> update(@PathVariable Long id, @Valid @RequestBody PokemonRequest request);
 
     @Operation(summary = "Eliminar Pokémon - Solo ADMIN")
+    @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{id}")
     ResponseEntity<Void> delete(@PathVariable Long id);
 }
