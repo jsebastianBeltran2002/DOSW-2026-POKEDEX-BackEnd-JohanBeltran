@@ -22,6 +22,7 @@ public class PokemonViewDocument {
     @Field("pokemon_nombre")
     private String pokemonNombre;
 
+    @Builder.Default
     @Field("view_count")
     private Long viewCount = 0L;
 

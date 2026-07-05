@@ -22,6 +22,7 @@ public class TeamStatsDocument {
     @Field("pokemon_nombre")
     private String pokemonNombre;
 
+    @Builder.Default
     @Field("veces_en_equipo")
     private Long vecesEnEquipo = 0L;
 
