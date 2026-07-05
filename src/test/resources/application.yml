@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/pokedex_test
+
+app:
+  jwt:
+    secret: dGVzdC1zZWNyZXQta2V5LXBhcmEtcHJ1ZWJhcy1kb3N3LTIwMjY=
+    expiration-ms: 86400000
