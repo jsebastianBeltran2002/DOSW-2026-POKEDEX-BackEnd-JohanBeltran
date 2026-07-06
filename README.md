@@ -1,11 +1,11 @@
-# Megadex API 🚀
+# Megadex API 
 
 ### Autor: Johan Sebastian Beltran Gutierrez
 ### Asignatura: Desarrollo y Operaciones de Software (DOSW) · 2026 Intersemestral
 
 ---
 
-## 📝 Descripción del Proyecto
+## Descripción del Proyecto
 
 **Megadex** es una API REST robusta diseñada para entrenadores y entusiastas del ecosistema Pokémon. La plataforma permite la exploración en profundidad, búsqueda avanzada, filtrado dinámico y comparación analítica de criaturas, además de ofrecer herramientas para la gestión de equipos enfocadas en el análisis competitivo, marcas de favoritos y monitoreo de estadísticas de uso global del catálogo.
 
@@ -18,7 +18,7 @@ La seguridad implementa un esquema dual de autenticación: mediante credenciales
 
 ---
 
-## 🛠️ Stack Tecnológico
+## 🛠Stack Tecnológico
 
 El backend está desarrollado sobre una arquitectura moderna e industrial utilizando las siguientes tecnologías:
 
@@ -36,7 +36,7 @@ El backend está desarrollado sobre una arquitectura moderna e industrial utiliz
 
 ---
 
-## 📐 Arquitectura del Sistema
+## Arquitectura del Sistema
 
 **Megadex** se rige bajo un patrón de **Arquitectura por Capas con Inversión de Dependencias (Hexagonal/Ports & Adapters)**. Este enfoque garantiza que la lógica de negocio se mantenga completamente agnóstica a los frameworks, bases de datos o librerías externas.
 
@@ -47,7 +47,7 @@ El backend está desarrollado sobre una arquitectura moderna e industrial utiliz
 
 ---
 
-## 📑 Documentación y Requerimientos
+## Documentación y Requerimientos
 
 El análisis detallado del sistema comprende un total de **18 requerimientos funcionales (RF)**, **5 requerimientos no funcionales (RNF)** evaluados bajo el estándar de calidad **ISO/IEC 25010** y sus respectivas reglas de negocio.
 
@@ -58,7 +58,7 @@ Toda la documentación técnica se encuentra organizada dentro de la carpeta `do
 
 ---
 
-## 🗺️ Diagramas del Sistema
+## Diagramas del Sistema
 
 ### 1. Diagrama de Contexto
 ![Diagrama de Contexto](docs/Diagrama%20de%20contexto/Diagrama%20de%20contexto.png)
