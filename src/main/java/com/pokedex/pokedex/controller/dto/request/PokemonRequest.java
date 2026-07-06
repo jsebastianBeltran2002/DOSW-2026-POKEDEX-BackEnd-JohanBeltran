@@ -11,6 +11,8 @@ public record PokemonRequest(
         @NotBlank(message = "El nombre es obligatorio")
         String nombre,
 
+        String descripcion,
+
         @NotEmpty(message = "Debe tener al menos un tipo")
         @Size(max = 3, message = "Un Pokémon puede tener máximo 3 tipos")
         List<String> tipos,
@@ -23,5 +25,31 @@ public record PokemonRequest(
         @DecimalMin(value = "0.0", inclusive = false, message = "El peso debe ser mayor a 0")
         Double peso,
 
-        String sprite
+        String sprite,
+
+        String region,
+
+        Integer generacion,
+
+        Boolean legendario,
+
+        Boolean tieneMega,
+
+        @Min(value = 0, message = "HP debe ser mayor o igual a 0")
+        Integer hp,
+
+        @Min(value = 0, message = "Ataque debe ser mayor o igual a 0")
+        Integer ataque,
+
+        @Min(value = 0, message = "Defensa debe ser mayor o igual a 0")
+        Integer defensa,
+
+        @Min(value = 0, message = "Ataque especial debe ser mayor o igual a 0")
+        Integer ataqueEspecial,
+
+        @Min(value = 0, message = "Defensa especial debe ser mayor o igual a 0")
+        Integer defensaEspecial,
+
+        @Min(value = 0, message = "Velocidad debe ser mayor o igual a 0")
+        Integer velocidad
 ) {}

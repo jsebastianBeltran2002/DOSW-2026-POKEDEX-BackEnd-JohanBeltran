@@ -41,18 +41,21 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Usuario findById(Long id) {
         return usuarioPort.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario", "id", id));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Usuario findByCorreo(String correo) {
         return usuarioPort.findByCorreo(correo)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario", "correo", correo));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Usuario> findAll() {
         return usuarioPort.findAll();
     }
