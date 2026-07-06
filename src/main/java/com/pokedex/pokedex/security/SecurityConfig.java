@@ -1,5 +1,8 @@
 package com.pokedex.pokedex.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pokedex.pokedex.controller.dto.response.ApiError;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -21,6 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -38,6 +45,26 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/v1/pokemon/**").hasRole("ADMINISTRADOR")
                         .requestMatchers("/v1/usuarios/**").hasRole("ADMINISTRADOR")
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setContentType("application/json");
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            objectMapper.writeValue(response.getOutputStream(),
+                                    new ApiError(401, "UNAUTHORIZED",
+                                            "Token inválido o ausente",
+                                            request.getRequestURI(),
+                                            LocalDateTime.now(), List.of()));
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setContentType("application/json");
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            objectMapper.writeValue(response.getOutputStream(),
+                                    new ApiError(403, "FORBIDDEN",
+                                            "No tienes permisos para este recurso",
+                                            request.getRequestURI(),
+                                            LocalDateTime.now(), List.of()));
+                        })
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

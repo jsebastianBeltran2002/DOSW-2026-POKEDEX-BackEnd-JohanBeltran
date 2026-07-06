@@ -21,11 +21,13 @@ public class PokemonServiceImpl implements PokemonService {
     private final PokemonPersistencePort pokemonPort;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Pokemon> findAll() {
         return pokemonPort.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Pokemon findById(Long id) {
         log.debug("Buscando Pokemon con id: {}", id);
         return pokemonPort.findById(id)
@@ -33,6 +35,7 @@ public class PokemonServiceImpl implements PokemonService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Pokemon findByNumero(Integer numero) {
         return pokemonPort.findByNumero(numero)
                 .orElseThrow(() -> new ResourceNotFoundException("Pokemon", "numero", numero));
@@ -87,6 +90,7 @@ public class PokemonServiceImpl implements PokemonService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Pokemon> filtrar(String region, String tipo, String generacion,
                                  String evolucion, String habilidad, String ataque,
                                  Boolean tieneMega, Boolean legendario) {
@@ -101,6 +105,7 @@ public class PokemonServiceImpl implements PokemonService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Pokemon> ordenar(String criterio, String direccion) {
         Comparator<Pokemon> comparator = switch (criterio == null ? "" : criterio) {
             case "nombre" -> Comparator.comparing(Pokemon::getNombre, Comparator.nullsLast(String::compareTo));
