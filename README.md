@@ -83,5 +83,4 @@ Toda la documentación técnica se encuentra organizada dentro de la carpeta `do
 ![RF-14](docs/Casos%20de%20uso/RF-14.png)
 ![RF-15](docs/Casos%20de%20uso/RF-15.png)
 ![RF-16](docs/Casos%20de%20uso/RF-16.png)
-![RF-17](docs/Casos%20de%20uso/RF-17.png)
 ![RF-18](docs/Casos%20de%20uso/RF-18.png)
