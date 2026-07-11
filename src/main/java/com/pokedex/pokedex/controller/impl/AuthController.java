@@ -9,10 +9,13 @@ import com.pokedex.pokedex.controller.mapper.UsuarioDtoMapper;
 import com.pokedex.pokedex.core.model.Usuario;
 import com.pokedex.pokedex.core.service.interfaces.AuthService;
 import com.pokedex.pokedex.core.service.interfaces.UsuarioService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,5 +37,10 @@ public class AuthController implements AuthApi {
         Usuario usuario = usuarioService.findByCorreo(request.correo());
         TokenResponse response = new TokenResponse(token, "Bearer", usuario.getCorreo(), usuario.getRol());
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public void loginWithGoogle(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/api/oauth2/authorization/google");
     }
 }
