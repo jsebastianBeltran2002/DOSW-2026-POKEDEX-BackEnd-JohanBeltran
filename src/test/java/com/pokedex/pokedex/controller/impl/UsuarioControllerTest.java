@@ -77,10 +77,13 @@ class UsuarioControllerTest {
     }
 
     @Test
-    void compararLegendarios_returns200() throws Exception {
-        mockMvc.perform(get("/v1/usuarios/comparar")
-                        .param("usuarioId1", "1")
-                        .param("usuarioId2", "2"))
+    void intercambiar_returns200() throws Exception {
+        mockMvc.perform(post("/v1/usuarios/intercambiar")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"ofertanteId":1,"receptorId":2,
+                                 "pokemonOfertadoId":1,"pokemonSolicitadoId":2}
+                                """))
                 .andExpect(status().isOk());
     }
 }

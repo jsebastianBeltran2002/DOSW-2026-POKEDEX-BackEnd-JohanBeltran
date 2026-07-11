@@ -1,9 +1,17 @@
 package com.pokedex.pokedex.core.service.impl;
 
+import com.pokedex.pokedex.controller.dto.request.IntercambiarRequest;
+import com.pokedex.pokedex.core.exception.BusinessException;
 import com.pokedex.pokedex.core.exception.DuplicateResourceException;
 import com.pokedex.pokedex.core.exception.ResourceNotFoundException;
 import com.pokedex.pokedex.core.model.Usuario;
 import com.pokedex.pokedex.core.service.interfaces.UsuarioPersistencePort;
+import com.pokedex.pokedex.persistence.entity.relational.PokemonEntity;
+import com.pokedex.pokedex.persistence.entity.relational.PokemonJpaRepository;
+import com.pokedex.pokedex.persistence.entity.relational.TeamEntity;
+import com.pokedex.pokedex.persistence.entity.relational.TeamJpaRepository;
+import com.pokedex.pokedex.persistence.entity.relational.UserEntity;
+import com.pokedex.pokedex.persistence.entity.relational.UserJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -15,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,10 +39,25 @@ class UsuarioServiceImplTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private UserJpaRepository userRepo;
+
+    @Mock
+    private PokemonJpaRepository pokemonRepo;
+
+    @Mock
+    private TeamJpaRepository teamRepo;
+
     @InjectMocks
     private UsuarioServiceImpl usuarioService;
 
     private Usuario usuario;
+    private UserEntity userEntity1;
+    private UserEntity userEntity2;
+    private PokemonEntity pokemon1;
+    private PokemonEntity pokemon2;
+    private TeamEntity team1;
+    private TeamEntity team2;
 
     @BeforeEach
     void setUp() {
@@ -45,6 +69,13 @@ class UsuarioServiceImplTest {
                 .activo(true)
                 .rol("USUARIO")
                 .build();
+
+        userEntity1 = UserEntity.builder().id(1L).nombre("Entrenador1").correo("e1@test.com").build();
+        userEntity2 = UserEntity.builder().id(2L).nombre("Entrenador2").correo("e2@test.com").build();
+        pokemon1 = PokemonEntity.builder().id(1L).numero(25).nombre("Pikachu").build();
+        pokemon2 = PokemonEntity.builder().id(2L).numero(4).nombre("Charmander").build();
+        team1 = TeamEntity.builder().id(1L).nombre("Equipo1").pokemons(new ArrayList<>(List.of(pokemon1))).build();
+        team2 = TeamEntity.builder().id(2L).nombre("Equipo2").pokemons(new ArrayList<>(List.of(pokemon2))).build();
     }
 
     @Nested
@@ -271,6 +302,110 @@ class UsuarioServiceImplTest {
                     () -> usuarioService.activarDesactivar(99L, true));
             verify(usuarioPort).findById(99L);
             verify(usuarioPort, never()).save(any());
+        }
+    }
+
+    @Nested
+    @DisplayName("intercambiar")
+    class Intercambiar {
+
+        private IntercambiarRequest request;
+
+        @BeforeEach
+        void setUp() {
+            request = new IntercambiarRequest(1L, 2L, 1L, 2L);
+        }
+
+        @Test
+        @DisplayName("intercambia Pokémon exitosamente")
+        void intercambiaExitosamente() {
+            when(userRepo.findById(1L)).thenReturn(Optional.of(userEntity1));
+            when(userRepo.findById(2L)).thenReturn(Optional.of(userEntity2));
+            when(pokemonRepo.findById(1L)).thenReturn(Optional.of(pokemon1));
+            when(pokemonRepo.findById(2L)).thenReturn(Optional.of(pokemon2));
+            when(teamRepo.findByUsuarioId(1L)).thenReturn(List.of(team1));
+            when(teamRepo.findByUsuarioIdAndPokemonId(1L, 1L)).thenReturn(Optional.of(team1));
+            when(teamRepo.findByUsuarioIdAndPokemonId(2L, 2L)).thenReturn(Optional.of(team2));
+
+            var result = usuarioService.intercambiar(request);
+
+            assertNotNull(result);
+            assertEquals("Intercambio realizado exitosamente", result.mensaje());
+            verify(teamRepo).save(team1);
+            verify(teamRepo).save(team2);
+        }
+
+        @Test
+        @DisplayName("lanza BusinessException cuando ofertante y receptor son el mismo")
+        void lanzaExcepcionCuandoMismoUsuario() {
+            var mismoUsuario = new IntercambiarRequest(1L, 1L, 1L, 2L);
+
+            assertThrows(BusinessException.class, () -> usuarioService.intercambiar(mismoUsuario));
+        }
+
+        @Test
+        @DisplayName("lanza BusinessException cuando se ofrece el mismo Pokémon")
+        void lanzaExcepcionCuandoMismoPokemon() {
+            var mismoPokemon = new IntercambiarRequest(1L, 2L, 1L, 1L);
+
+            assertThrows(BusinessException.class, () -> usuarioService.intercambiar(mismoPokemon));
+        }
+
+        @Test
+        @DisplayName("lanza ResourceNotFoundException cuando ofertante no existe")
+        void lanzaExcepcionCuandoOfertanteNoExiste() {
+            when(userRepo.findById(1L)).thenReturn(Optional.empty());
+
+            assertThrows(ResourceNotFoundException.class, () -> usuarioService.intercambiar(request));
+        }
+
+        @Test
+        @DisplayName("lanza ResourceNotFoundException cuando Pokémon ofertado no existe")
+        void lanzaExcepcionCuandoPokemonOfertadoNoExiste() {
+            when(userRepo.findById(1L)).thenReturn(Optional.of(userEntity1));
+            when(userRepo.findById(2L)).thenReturn(Optional.of(userEntity2));
+            when(pokemonRepo.findById(1L)).thenReturn(Optional.empty());
+
+            assertThrows(ResourceNotFoundException.class, () -> usuarioService.intercambiar(request));
+        }
+
+        @Test
+        @DisplayName("lanza BusinessException cuando ofertante no tiene Pokémon registrados")
+        void lanzaExcepcionCuandoOfertanteSinPokemon() {
+            when(userRepo.findById(1L)).thenReturn(Optional.of(userEntity1));
+            when(userRepo.findById(2L)).thenReturn(Optional.of(userEntity2));
+            when(pokemonRepo.findById(1L)).thenReturn(Optional.of(pokemon1));
+            when(pokemonRepo.findById(2L)).thenReturn(Optional.of(pokemon2));
+            when(teamRepo.findByUsuarioId(1L)).thenReturn(List.of());
+
+            assertThrows(BusinessException.class, () -> usuarioService.intercambiar(request));
+        }
+
+        @Test
+        @DisplayName("lanza BusinessException cuando Pokémon ofertado no pertenece al ofertante")
+        void lanzaExcepcionCuandoPokemonNoPertenece() {
+            when(userRepo.findById(1L)).thenReturn(Optional.of(userEntity1));
+            when(userRepo.findById(2L)).thenReturn(Optional.of(userEntity2));
+            when(pokemonRepo.findById(1L)).thenReturn(Optional.of(pokemon1));
+            when(pokemonRepo.findById(2L)).thenReturn(Optional.of(pokemon2));
+            when(teamRepo.findByUsuarioId(1L)).thenReturn(List.of(team1));
+            when(teamRepo.findByUsuarioIdAndPokemonId(1L, 1L)).thenReturn(Optional.empty());
+
+            assertThrows(BusinessException.class, () -> usuarioService.intercambiar(request));
+        }
+
+        @Test
+        @DisplayName("lanza BusinessException cuando Pokémon solicitado no pertenece al receptor")
+        void lanzaExcepcionCuandoPokemonSolicitadoNoPertenece() {
+            when(userRepo.findById(1L)).thenReturn(Optional.of(userEntity1));
+            when(userRepo.findById(2L)).thenReturn(Optional.of(userEntity2));
+            when(pokemonRepo.findById(1L)).thenReturn(Optional.of(pokemon1));
+            when(pokemonRepo.findById(2L)).thenReturn(Optional.of(pokemon2));
+            when(teamRepo.findByUsuarioId(1L)).thenReturn(List.of(team1));
+            when(teamRepo.findByUsuarioIdAndPokemonId(1L, 1L)).thenReturn(Optional.of(team1));
+            when(teamRepo.findByUsuarioIdAndPokemonId(2L, 2L)).thenReturn(Optional.empty());
+
+            assertThrows(BusinessException.class, () -> usuarioService.intercambiar(request));
         }
     }
 }

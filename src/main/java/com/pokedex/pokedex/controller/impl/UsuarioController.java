@@ -1,7 +1,9 @@
 package com.pokedex.pokedex.controller.impl;
 
 import com.pokedex.pokedex.controller.api.UsuarioApi;
+import com.pokedex.pokedex.controller.dto.request.IntercambiarRequest;
 import com.pokedex.pokedex.controller.dto.request.UsuarioRequest;
+import com.pokedex.pokedex.controller.dto.response.IntercambiarResponse;
 import com.pokedex.pokedex.controller.dto.response.UsuarioResponse;
 import com.pokedex.pokedex.core.service.interfaces.UsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +48,8 @@ public class UsuarioController implements UsuarioApi {
     }
 
     @Override
-    public ResponseEntity<?> compararLegendarios(Long usuarioId1, Long usuarioId2) {
-        return ResponseEntity.ok(null);
+    public ResponseEntity<IntercambiarResponse> intercambiar(IntercambiarRequest request) {
+        var response = usuarioService.intercambiar(request);
+        return ResponseEntity.ok(response);
     }
 }

@@ -1,5 +1,7 @@
 package com.pokedex.pokedex.core.service.interfaces;
 
+import com.pokedex.pokedex.controller.dto.request.IntercambiarRequest;
+import com.pokedex.pokedex.controller.dto.response.IntercambiarResponse;
 import com.pokedex.pokedex.core.model.Usuario;
 import java.util.List;
 
@@ -11,4 +13,6 @@ public interface UsuarioService {
     Usuario actualizar(Long id, Usuario usuario);
     void eliminar(Long id);
     Usuario activarDesactivar(Long id, Boolean activo);
+
+    IntercambiarResponse intercambiar(IntercambiarRequest request);
 }

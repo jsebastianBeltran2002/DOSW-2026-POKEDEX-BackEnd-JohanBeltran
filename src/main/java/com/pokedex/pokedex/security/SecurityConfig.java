@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/v1/pokemon/**").hasRole("ADMINISTRADOR")
                         .requestMatchers(HttpMethod.PUT, "/v1/pokemon/**").hasRole("ADMINISTRADOR")
                         .requestMatchers(HttpMethod.DELETE, "/v1/pokemon/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers(HttpMethod.POST, "/v1/usuarios/intercambiar").authenticated()
                         .requestMatchers("/v1/usuarios/**").hasRole("ADMINISTRADOR")
                         .anyRequest().authenticated()
                 )

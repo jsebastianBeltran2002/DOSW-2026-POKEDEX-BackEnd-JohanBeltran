@@ -2,6 +2,8 @@ package com.pokedex.pokedex.controller.api;
 
 import com.pokedex.pokedex.controller.dto.request.UsuarioRequest;
 import com.pokedex.pokedex.controller.dto.response.UsuarioResponse;
+import com.pokedex.pokedex.controller.dto.request.IntercambiarRequest;
+import com.pokedex.pokedex.controller.dto.response.IntercambiarResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -37,7 +39,7 @@ public interface UsuarioApi {
     @DeleteMapping("/{id}")
     ResponseEntity<Void> eliminar(@PathVariable Long id);
 
-    @Operation(summary = "Comparar Pokémon legendarios entre dos usuarios")
-    @GetMapping("/comparar")
-    ResponseEntity<?> compararLegendarios(@RequestParam Long usuarioId1, @RequestParam Long usuarioId2);
+    @Operation(summary = "Intercambiar Pokémon entre usuarios")
+    @PostMapping("/intercambiar")
+    ResponseEntity<IntercambiarResponse> intercambiar(@Valid @RequestBody IntercambiarRequest request);
 }
